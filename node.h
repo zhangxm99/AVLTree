@@ -9,15 +9,13 @@ template<typename T>
 class Node {
 public:
     T val;
-    int balacnum;
     int depth;
-    Node<T> *parent;
     Node<T> *left;
     Node<T> *right;
 
-    Node() : val(0), balacnum(0), depth(1), parent(nullptr), left(nullptr), right(nullptr) {}
+    Node() : val(0), depth(1), left(nullptr), right(nullptr) {}
 
-    Node(T num) : val(num), balacnum(0), depth(1), parent(nullptr), left(nullptr), right(nullptr) {}
+    Node(T num) : val(num), depth(1), left(nullptr), right(nullptr) {}
 };
 
 
