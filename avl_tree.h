@@ -21,6 +21,10 @@ private:
 
     Node<T> *leftRotate(Node<T> *root);
 
+    Node<T> *deleteX(Node<T> *root, T data);
+
+    Node<T> *minEle(Node<T> *root);
+
 public:
     avl_tree(std::vector<T> &);
 
@@ -37,6 +41,13 @@ public:
 
 #include "queue"
 #include "iostream"
+
+template<typename T>
+Node<T> *avl_tree<T>::minEle(Node<T> *root) {
+    if (!root) return nullptr;
+    while (root->left) root = root->left;
+    return root;
+}
 
 template<typename T>
 void avl_tree<T>::traverse() {
@@ -116,6 +127,59 @@ Node<T> *avl_tree<T>::leftRotate(Node<T> *root) {
     root->depth = std::max(depth(root->left), depth(root->right)) + 1;
     newroot->depth = std::max(depth(newroot->left), depth(newroot->right)) + 1;
     return newroot;
+}
+
+template<typename T>
+void avl_tree<T>::remove(T data) {
+    root = deleteX(root, data);
+}
+
+template<typename T>
+Node<T> *avl_tree<T>::deleteX(Node<T> *root, T data) {
+    if (!root) return nullptr;
+    if (data < root->val) {
+        root->left = deleteX(root->left, data);
+    } else if (data > root->val) {
+        root->right = deleteX(root->right, data);
+    } else {
+        if (!root->left || !root->right) {
+            Node<T> *tmp = root->left ? root->left : root->right;
+            if (!tmp) {
+                tmp = root;
+                root = nullptr;
+            } else {
+                *root = *tmp;
+                delete tmp;
+            }
+        } else {
+            auto tmp = minEle(root->right);
+            root->val = tmp->val;
+            root->right = deleteX(root->right, tmp->val);
+        }
+    }
+    if (!root) return nullptr;
+
+    root->depth = std::max(depth(root->left), depth(root->right)) + 1;
+    auto getBalance = [](Node<T> *r) { return depth(r->left) - depth(r->right); };
+    int balance = getBalance(root);
+
+    if (balance > 1) {
+        if (getBalance(root->left) >= 0) {
+            return rightRotate(root);
+        } else {
+            root->left = leftRotate(root->left);
+            return rightRotate(root);
+        }
+    }
+    if (balance < -1) {
+        if (getBalance(root->right) <= 0) {
+            return leftRotate(root);
+        } else {
+            root->right = rightRotate(root->right);
+            return leftRotate(root);
+        }
+    }
+    return root;
 }
 
 

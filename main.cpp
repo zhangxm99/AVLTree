@@ -8,7 +8,8 @@ int main() {
     for (int i = 0; i < 30; i++) {
         dataset.add(i);
     }
-
+    dataset.remove(15);
+//    dataset.remove(7);
     dataset.traverse();
 
 
